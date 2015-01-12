@@ -164,7 +164,10 @@ module ActsAsTaggableOn::Taggable
                              ])
           end
 
-          conditions << "EXISTS (SELECT 1 FROM #{tagging_cond})"
+          unless options.delete(:include_non_tagged_objects)
+            conditions << "EXISTS (SELECT 1 FROM #{tagging_cond})"
+          end
+
           if options.delete(:order_by_matching_tag_count)
             order_by << "(SELECT count(*) FROM #{tagging_cond}) desc"
           end
